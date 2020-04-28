@@ -1,6 +1,7 @@
 import React , { Component } from 'react';
 import { Text, ScrollView } from 'react-native';
 import { Card } from 'react-native-elements';
+import { baseUrl } from '../shared/baseUrl';
 
 class Contact extends Component {
 
@@ -25,7 +26,7 @@ class Contact extends Component {
                 <Text style={{marginBottom: 10}}>
                     U.S.A.
                 </Text>
-
+                <Text></Text>
                 <Text>Phone: 1-206-555-1234</Text>
                 <Text>Email: campsites@nucamp.co</Text>
               </Card>
