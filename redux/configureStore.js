@@ -5,14 +5,15 @@ import { campsites } from './campsites';
 import { comments } from './comments';
 import { promotions } from './promotions';
 import { partners } from './partners';
-
+import { favorites } from './favorites';
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
             campsites,
             comments,
             partners,
-            promotions
+            promotions,
+            favorites
         }),
         applyMiddleware(thunk, logger)
     );
