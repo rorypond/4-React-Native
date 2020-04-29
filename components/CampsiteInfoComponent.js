@@ -4,8 +4,9 @@ import { Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 
-const mapStateToProps = state => {
-    return{    
+
+const mapStateToProps = state => {      // connecting the Redux Store's state to our props. Only connecting the state portion we need                                               which is campsites and comments
+    return {
         campsites: state.campsites,
         comments: state.comments
     };
@@ -19,12 +20,13 @@ function RenderCampsite (props) {
 
     
     if (campsite){
-        return(
+        return (
             <Card
                 featuredTitle={campsite.name}
-                image={{uri: baseUrl + campsite.image}}>>
+                image={{uri: baseUrl + campsite.image}}>
+                
                 <Text style={{margin: 10}}>
-                    {campsite.description}
+                {campsite.description}
                 </Text>
                 <Icon 
                     name={props.favorite ? 'heart' : 'heart-o'}
@@ -53,17 +55,17 @@ function RenderComments({comments}) {
                 <Text style={{fontSize: 12}}>{`-- ${item.author}, ${item.date}`}</Text>
             </View>
         );
-    };
-
+    }
+    
     return (
         <Card title='Comments'>
             <FlatList
                 data={comments}
                 renderItem={renderCommentItem}
                 keyExtractor={item => item.id.toString()}
-            />
+                />
         </Card>
-    );
+    )
 }
 
 class CampsiteInfo extends Component{
@@ -79,12 +81,12 @@ class CampsiteInfo extends Component{
     }
 
     static navigationOptions = {
-        Title: 'Campsite '
+        Title: 'Campsite Information'
     }
     render(){
         const campsiteId = this.props.navigation.getParam('campsiteId');
         const campsite = this.props.campsites.campsites.filter(campsite => campsite.id === campsiteId)[0];
-        const comments = this.props.comments.comments.filter( comment => comment.campsiteId === campsiteId);
+        const comments = this.props.comments.comments.filter(comment => comment.campsiteId === campsiteId);
         return (
             <ScrollView>
                 <RenderCampsite
