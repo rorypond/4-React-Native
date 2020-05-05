@@ -26,6 +26,8 @@ export const commentsFailed = errMess => ({
     payload: errMess
 });
 
+
+
 export const addComments = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
     payload: comments
@@ -151,4 +153,28 @@ export const postFavorite = campsiteId => dispatch => {
 export const addFavorite = campsiteId => ({
     type: ActionTypes.ADD_FAVORITE,
     payload: campsiteId
+});
+
+export const postComment = ( campsiteId, rating, author, text ) => dispatch => { // taking the paramaters 
+    console.log( campsiteId, rating, author, text );
+    
+    const newComment = {// putting all the input in one object
+        campsiteId,
+        rating,
+        author,
+        text,
+        date: new Date().toISOString()
+    };
+
+    console.log(newComment);
+
+    setTimeout(() => {
+        dispatch(addComment(newComment)); //thunking the object
+    }, 2000);
+
+}
+
+export const addComment = comment => ({
+    type: ActionTypes.ADD_COMMENT,
+    payload: comment
 });
