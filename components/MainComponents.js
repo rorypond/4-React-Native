@@ -4,16 +4,26 @@ import Directory from './DirectoryComponent';
 import About from './AboutComponent';
 import Contact from './ContactComponent';
 import  Favorites from './FavoritesComponent';
-import { createStackNavigator, createDrawerNavigator, DrawerItems} from 'react-navigation';
+import {  createStackNavigator, 
+          createDrawerNavigator, 
+          DrawerItems } from 'react-navigation';
 import CampsiteInfo from './CampsiteInfoComponent';
-import { View, Platform, StyleSheet, Text, ScrollView, Image } from 'react-native';
+import {  View, 
+          Platform, 
+          StyleSheet, 
+          Text, 
+          ScrollView, 
+          Image 
+        } from 'react-native';
 import { Icon } from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
 import { connect } from 'react-redux';
-import { fetchCampsites, fetchComments, fetchPromotions,
-    fetchPartners } from '../redux/ActionCreators';
+import {  fetchCampsites, 
+          fetchComments, 
+          fetchPromotions,
+          fetchPartners } from '../redux/ActionCreators';
 import Reservation from './ReservationComponent';
-    
+import Login from './LoginComponent';    
     const mapDispatchToProps = {
         fetchCampsites,
         fetchComments,
@@ -165,6 +175,28 @@ const FavoritesNavigator = createStackNavigator(
         })
     }
 );
+const LoginNavigator = createStackNavigator(
+    {
+        Login: { screen: Login}
+    },
+    {
+        navigationOptions: ({navigation}) => ({
+            headerStyle: {
+                backgroundColor: '#5637DD'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerLeft: <Icon
+                name='sign-in'
+                type='font-awesome'
+                iconStyle={styles.stackIcon}
+                onPress={() => navigation.toggleDrawer()}
+            />
+        })
+    }
+);
 const CustomDrawerContentComponent = props => (
     <ScrollView>
         <SafeAreaView 
@@ -184,7 +216,20 @@ const CustomDrawerContentComponent = props => (
 );
 
 const MainNavigator = createDrawerNavigator(
-    {
+    {        
+    Login: {
+        screen: LoginNavigator,
+        navigationOptions: {
+            drawerIcon: ({tintColor}) => (
+                <Icon
+                    name='sign-in'
+                    type='font-awesome'
+                    size={24}
+                    color={tintColor}
+                />
+            )
+        }
+    },
         Home: {
             screen: HomeNavigator,
             navigationOptions: {
@@ -269,6 +314,7 @@ const MainNavigator = createDrawerNavigator(
         }
     },
     {
+        initialRouteName: 'Home',  //uses the route specified as Home and not the first thing in the drawer
         drawerBackgroundColor: '#CEC8FF',
         contentComponent: CustomDrawerContentComponent
     }
