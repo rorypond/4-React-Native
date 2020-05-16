@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal,Alert } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import * as Animatable from 'react-native-animatable';
+import * as Permissions from 'expo-permissions';
+import Expo, { Notifications } from 'expo';
+import Constants from 'expo-constants';
 
 class Reservation extends Component{
 
@@ -11,7 +14,8 @@ class Reservation extends Component{
         this.state = {
             campers: 1,
             hikeIn: false,
-            date: ''
+            date: '',
+            token: ''
         };
     }
 
@@ -19,6 +23,28 @@ class Reservation extends Component{
         title: 'Reserve Campsite'
     }
 
+    handleReservation() {
+        console.log(JSON.stringify(this.state));
+        Alert.alert(
+            'Begin Search?',
+            `Number of Campers: ${this.state.campers} \n\nHike-In? ${this.state.hikeIn} \n\nDate: ${this.state.date}`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                    onPress: () => this.resetForm(),
+                },
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date);
+                        this.resetForm();
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    }
 
     resetForm(){
         this.setState({
@@ -26,6 +52,36 @@ class Reservation extends Component{
             hikeIn: false,
             date: ''
         });
+    }
+
+
+    async obtainNotificationPermission() {
+        const permission = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+                token = await Notifications.getExpoPushTokenAsync();
+                console.log("token indicator: " + token);
+                this.setState({ token: token });
+                console.log("token indicator: " +  permission.status, permission.token);
+            return permission;
+        }
+        console.log("token indicator lalala: " +  permission.status, permission.token);
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        const {status} = await this.obtainNotificationPermission();
+        console.log("Check Three", status);
+        if (status === 'granted') {
+                Notifications.presentLocalNotificationAsync({
+                title: 'Your Campsite Reservation Search',
+                body: 'Search for ' + date + ' requested',
+            });
+
+        }
     }
 
     render(){
@@ -85,29 +141,11 @@ class Reservation extends Component{
                     />
                 </View>
                 <View style={styles.formRow}>
-                    <Button
-                        onPress={() => {
-                            Alert.alert(
-                                'Begin Search?',
-                                `Number of Campers: ${this.state.campers} \nHike-In? ${this.state.hikeIn}\nDate: ${this.state.date}`,
-                                [
-                                    {
-                                     text: 'Cancel',
-                                     onPress: () => this.resetForm(),
-                                    style: 'cancel'
-                                    },
-                                    {
-                                    text: 'OK',
-                                    onPress: () => this.resetForm(),
-                                    }
-                                ],
-                                { cancelable: false }
-                            )
-                        }}
-
+                <Button
+                        onPress={() => this.handleReservation()}
                         title='Search'
                         color='#5637DD'
-                        accessibilityLabel='Tap me to search available campsites to reserve'
+                        accessibilityLabel='Tap me to search for available campsites to reserve'
                     />
                 </View>
 
